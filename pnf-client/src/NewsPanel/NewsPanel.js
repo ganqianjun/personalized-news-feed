@@ -1,6 +1,8 @@
 import './NewsPanel.css';
 import React from 'react';
 
+import NewsCard from '../NewsCard/NewsCard';
+
 class NewsPanel extends React.Component {
   constructor() {
     super();
@@ -44,7 +46,7 @@ class NewsPanel extends React.Component {
     const news_list = this.state.news.map(function(news) {
       return (
         <a className="list-group-item" key={news.digest} href='#'>
-          {news.digest}
+          <NewsCard news={news} />
         </a>
       );
     });
