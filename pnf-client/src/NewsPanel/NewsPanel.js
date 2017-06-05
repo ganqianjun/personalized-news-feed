@@ -9,10 +9,12 @@ class NewsPanel extends React.Component {
     this.state = {
       news: null
     };
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentDidMount() {
     this.loadMoreNews();
+    window.addEventListener('scroll', this.handleScroll);
   }
 
   // Load news from backend, currently only 2 sample news
@@ -34,11 +36,31 @@ class NewsPanel extends React.Component {
       });
   }
 
+  handleScroll() {
+    // window.scrollY : current page that scrolls to (pixel in Y)
+    // window.pageYOffset is the old version of window.scrollY
+    // document.documentElement.scrollTop - for IE
+    let scrollY = window.scrollY ||
+                  window.pageYOffset ||
+                  document.documentElement.scrollTop;
+    // window.innerHeight is the visual window height
+    // window.innerHeight + scrollY  - the height of the whole page
+    if ((window.innerHeight + scrollY) >= (document.body.offsetHeight - 50)) {
+      console.log('App.js : Loading more news...');
+      this.loadMoreNews();
+    }
+  }
+
   // Iterate each news in state.news and create NewsCard for it
   renderNews() {
     const news_list = this.state.news.map(function(news) {
+      // return (
+      //   <a className="list-group-item" key={news.digest} href='#'>
+      //     <NewsCard news={news} />
+      //   </a>
+      // );
       return (
-        <a className="list-group-item" key={news.digest} href='#'>
+        <a className="list-group-item" href='#'>
           <NewsCard news={news} />
         </a>
       );
