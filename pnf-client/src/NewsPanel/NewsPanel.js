@@ -9,7 +9,7 @@ class NewsPanel extends React.Component {
     };
   }
 
-  ComponentDidMount() {
+  componentDidMount() {
     this.loadMoreNews();
   }
 
