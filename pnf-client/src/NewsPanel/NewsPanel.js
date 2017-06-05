@@ -1,5 +1,6 @@
 import './NewsPanel.css';
 import React from 'react';
+import _ from 'lodash';
 
 import NewsCard from '../NewsCard/NewsCard';
 
@@ -14,6 +15,8 @@ class NewsPanel extends React.Component {
 
   componentDidMount() {
     this.loadMoreNews();
+    // to retrieve from server only once every 1s
+    this.loadMoreNews = _.debounce(this.loadMoreNews, 1000);
     window.addEventListener('scroll', this.handleScroll);
   }
 
