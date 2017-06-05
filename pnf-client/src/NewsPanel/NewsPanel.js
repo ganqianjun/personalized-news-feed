@@ -24,7 +24,7 @@ class NewsPanel extends React.Component {
           'title':"China's big Airbnb rival is taking the battle overseasChina's big Airbnb rival is taking the battle overseas",
           'description':"China's leading home-rental site has been a thorn in Airbnb's side in the world's most populous country. China's leading home-rental site has been a thorn in Airbnb's side in the world's most populous country. ",
           'source':'cnn',
-          'urlToImage':'http://http://i2.cdn.turner.com/money/dam/assets/170529093311-tujia-airbnb-tech-china-780x439.jpg',
+          'urlToImage':'http://i2.cdn.turner.com/money/dam/assets/170529093311-tujia-airbnb-tech-china-780x439.jpg',
           'digest':'news-01',
           'reason':"Recommended"
         },
