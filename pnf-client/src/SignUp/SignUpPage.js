@@ -2,8 +2,8 @@ import React, {PropTypes} from 'react';
 import SignUpForm from './SignUpForm';
 
 class SignUpPage extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor(props, context) {
+    super(props, context);
 
     this.state = {
       errors: {},
@@ -33,7 +33,44 @@ class SignUpPage extends React.Component {
       return;
     }
 
-    // Todo : post signup data and handle response
+    // post signup data and handle response
+    // post registeration data
+    fetch('http://localhost:3000/auth/signup', {
+      method: 'POST',
+      cache: false,
+      headers: {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.user.email,
+        password: this.state.user.password
+      })
+    })
+    .then(response => {
+      if (response.status === 200) {
+        this.setState({
+          errors: {}
+        });
+
+        response.json().then(function(json) {
+          console.log('SignUpPage : json - ' + json);
+          // when signup, backend doesn't send token.
+          // only gets the token when login. So jump to the login page
+          this.context.router.replace('/login');
+        }.bind(this));
+      }
+      else {
+        response.json().then(function(json) {;
+          const errors = json.errors ? json.errors : {};
+          errors.summary = json.message;
+          console.log('SignUpPage : Signup Failed - ' + this.state.errors);
+          this.setState({
+            errors
+          });
+        }.bind(this));
+      } // end of if..else..
+    }); // end of fetch
   }
 
   changeUserInformation(event) {
@@ -68,5 +105,10 @@ class SignUpPage extends React.Component {
     );
   }
 }
+
+// To make react-router work
+SignUpPage.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 
 export default SignUpPage;
