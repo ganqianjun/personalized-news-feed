@@ -1,5 +1,6 @@
 var cors = require('cors');
 var express = require('express');
+var passport = require('passport');
 var path = require('path');
 
 var index = require('./routes/index');
@@ -12,6 +13,13 @@ app.set('views', path.join(__dirname, '../pnf-client/build/'));
 app.set('view engine', 'jade');
 
 app.use('/static', express.static(path.join(__dirname, '../pnf-client/build/static/')));
+
+// load passport strategies
+app.use(passport.initialize());
+var localSignupStrategy = require('./passport/signup_passport');
+var localLoginStrategy = require('./passport/login_passport');
+passport.use('local-signup', localSignupStrategy);
+passport.use('local-login', localLoginStrategy)
 
 // TODO: remove this after development is done.
 app.use(cors());
