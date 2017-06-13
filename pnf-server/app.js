@@ -10,6 +10,9 @@ var news = require('./routes/news');
 
 var app = express();
 
+var config = require('./config/config.json');
+require('./models/main.js').connect(config.mongoDbUri);
+
 // view engine setup
 app.set('views', path.join(__dirname, '../pnf-client/build/'));
 app.set('view engine', 'jade');
