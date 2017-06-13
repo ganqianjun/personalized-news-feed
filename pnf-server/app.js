@@ -1,8 +1,10 @@
+var bodyParser = require('body-parser');
 var cors = require('cors');
 var express = require('express');
 var passport = require('passport');
 var path = require('path');
 
+var auth = require('./routes/auth');
 var index = require('./routes/index');
 var news = require('./routes/news');
 
@@ -13,6 +15,7 @@ app.set('views', path.join(__dirname, '../pnf-client/build/'));
 app.set('view engine', 'jade');
 
 app.use('/static', express.static(path.join(__dirname, '../pnf-client/build/static/')));
+app.use(bodyParser.json());
 
 // load passport strategies
 app.use(passport.initialize());
@@ -25,6 +28,11 @@ passport.use('local-login', localLoginStrategy)
 app.use(cors());
 
 app.use('/', index);
+app.use('/auth', auth);
+
+// pass the authenticaion checker middleware
+const authCheckMiddleware = require('./middleware/auth_checker');
+app.use('/news', authCheckMiddleware);
 app.use('/news', news);
 
 // catch 404 and forward to error handler
