@@ -1,1 +1,3 @@
 common/*.pyc
+news_pipeline/*.pyc
+news_pipeline/scrapers/*.pyc
