@@ -26,7 +26,7 @@ SLEEP_TIME_IN_SECONDS = 10
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT)
 
 SCRAPE_NEWS_TASK_QUEUE_URL = 'amqp://lidfgojb:e2ZxaQS3nDRqgXHBq5mHrxyqjl9K3_uG@donkey.rmq.cloudamqp.com/lidfgojb'
-SCRAPE_NEWS_TASK_QUEUE_NAME = 'test'
+SCRAPE_NEWS_TASK_QUEUE_NAME = 'personalized-news-feed-scrape-news-task-queue'
 
 cloudAMQP_client = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)
 
