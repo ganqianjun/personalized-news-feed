@@ -5,7 +5,8 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'scrapers'))
 
-import news_scraper_cnn
+from newspaper import Article
+
 from cloudAMQP_client import CloudAMQPClient
 
 SCRAPE_NEWS_TASK_QUEUE_URL = "amqp://lidfgojb:e2ZxaQS3nDRqgXHBq5mHrxyqjl9K3_uG@donkey.rmq.cloudamqp.com/lidfgojb"
@@ -26,14 +27,11 @@ def handle_message(msg):
     task = msg
     text = None
 
-    # Support CNN only
-    if task['source'] == 'cnn':
-        print 'News fetcher : scraping CNN news'
-        text = news_scraper_cnn.extract_news(task['url'])
-    else:
-        print 'News fetcher : News source [%s] is not supported' % task['source']
+    article = Article(task['url'])
+    article.download()
+    article.parse()
 
-    task['text'] = text
+    task['text'] = article.text.encode('utf-8')
     dedupe_news_queue_client.sendMessage(task)
 
 while True:

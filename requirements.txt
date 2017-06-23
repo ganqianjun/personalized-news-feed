@@ -1,4 +1,5 @@
 lxml
+newspaper
 numpy
 pika
 pymongo
