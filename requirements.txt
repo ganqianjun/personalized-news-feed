@@ -1,6 +1,9 @@
 lxml
+numpy
 pika
 pymongo
 python-jsonrpc
 redis
 requests
+scipy
+sklearn
