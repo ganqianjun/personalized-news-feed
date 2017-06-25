@@ -12,6 +12,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 
 import mongodb_client
+import news_recommendation_service_client
 from cloudAMQP_client import CloudAMQPClient
 
 REDIS_HOST = "localhost"
@@ -26,8 +27,8 @@ USER_NEWS_TIME_OUT_IN_SECONDS = 600
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT, db=0)
 
-LOG_CLICKS_TASK_QUEUE_URL = "amqp://ecuzowxa:wvDDMpmkDibM6oCezovysyWzKQRzclCu@donkey.rmq.cloudamqp.com/ecuzowxa"
-LOG_CLICKS_TASK_QUEUE_NAME = "personalized-news-feed-log-clicks-task-queue"
+LOG_CLICKS_TASK_QUEUE_URL = 'amqp://ecuzowxa:wvDDMpmkDibM6oCezovysyWzKQRzclCu@donkey.rmq.cloudamqp.com/ecuzowxa'
+LOG_CLICKS_TASK_QUEUE_NAME = 'personalized-news-feed-log-clicks-task-queue'
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
 
 def getNewsSummariesForUser(user_id, page_num):
@@ -58,11 +59,19 @@ def getNewsSummariesForUser(user_id, page_num):
 
         sliced_news = total_news[begin_index:end_index]
 
+    # get user preference for news
+    preference = news_recommendation_service_client.getPreferenceForUser(user_id)
+    topPreference = None
+    if preference is not None and len(preference) > 0:
+        topPreference = preference[0]
+
     for news in sliced_news:
         # Remove text field to save bandwidth.
         del news['text']
+        if 'class' in news and news['class'] == topPreference:
+            news['reason'] = 'Recommend'
         if news['publishedAt'].date() == datetime.today().date():
-            news['time'] = 'today'
+            news['time'] = 'Today'
     return json.loads(dumps(sliced_news))
 
 def logNewsClickForUser(user_id, news_id):
@@ -81,4 +90,5 @@ def logNewsClickForUser(user_id, news_id):
         'newsId': news_id,
         'timestamp': str(datetime.utcnow())
     }
+    print message
     cloudAMQP_client.sendMessage(message);
