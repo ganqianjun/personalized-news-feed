@@ -9,7 +9,9 @@ class NewsPanel extends React.Component {
   constructor() {
     super();
     this.state = {
-      news: null
+      news: null,
+      pageNum: 1,
+      loadedAll: false
     };
     this.handleScroll = this.handleScroll.bind(this);
   }
@@ -21,9 +23,17 @@ class NewsPanel extends React.Component {
     window.addEventListener('scroll', this.handleScroll);
   }
 
-  // Load news from backend, currently only 2 sample news
+  // Load news from backend
   loadMoreNews() {
-    let request = new Request('http://localhost:3000/news', {
+    if (this.state.loadedAll === true) {
+      return;
+    }
+
+    let url = 'http://localhost:3000/news/userId/' + Auth.getEmail()
+              + '/pageNum/' + this.state.pageNum;
+
+    // we need encodeURI() to escape some special characters
+    let request = new Request(encodeURI(url), {
       method: 'GET',
       headers:{
         'Authorization':'bearer ' + Auth.getToken(),
@@ -34,11 +44,16 @@ class NewsPanel extends React.Component {
     // return a promise
     fetch(request)
       .then((res) =>  res.json()) // transfer to JSON
-      .then((loadedNews) => {
-        // the previous news is empty, then use 'loadedNews'
-        // or we need to add 'loadedNews' after previous news
+      .then((news) => {
+        if (!news || news.length === 0) {
+          this.setState({
+            loadedAll: true
+          });
+        }
+
         this.setState({
-          news: this.state.news ? this.state.news.concat(loadedNews) : loadedNews
+          news: this.state.news? this.state.news.concat(news) : news,
+          pageNum: this.state.pageNum + 1
         });
       });
   }
