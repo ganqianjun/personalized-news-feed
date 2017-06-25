@@ -1,3 +1,4 @@
+import operations
 import pyjsonrpc
 
 SERVER_HOST = 'localhost'
@@ -9,7 +10,11 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
     def add(self, a, b):
         print "Service.py : add is called with %d and %d" % (a, b)
         return a + b
-        
+
+    @pyjsonrpc.rpcmethod
+    def getNewsSummariesForUser(self, user_id, page_num):
+        return operations.getNewsSummariesForUser(user_id, page_num)
+
 # Threading HTTP Server
 http_server = pyjsonrpc.ThreadingHttpServer(
   server_address = (SERVER_HOST, SERVER_PORT),
