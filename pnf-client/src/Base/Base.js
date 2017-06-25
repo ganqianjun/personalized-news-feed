@@ -1,5 +1,7 @@
 import './Base.css';
 import React, {PropTypes} from 'react';
+import { Link } from 'react-router';
+
 import Auth from '../Auth/Auth';
 
 // Base includes navigation bar and the web content
@@ -18,8 +20,8 @@ const Base = ({children}) => (
               </div>)
               :
              (<div>
-                <li><a href="/login">Log In</a></li>
-                <li><a href="/signup">Sign Up</a></li>
+                <li><Link to="/login">Log in</Link></li>
+                <li><Link to="/signup">Sign up</Link></li>
               </div>)
            }
          </ul>
