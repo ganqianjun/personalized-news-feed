@@ -1,9 +1,25 @@
 import './NewsCard.css';
+
+import Auth from '../Auth/Auth';
 import React from 'react';
 
 class NewsCard extends React.Component {
   redirectToUrl(url) {
+    this.sendClickLog();
     window.open(url, '_blank');
+  }
+
+  sendClickLog() {
+    let url = 'http://localhost:3000/news/userId/' + Auth.getEmail()
+              + '/newsId/' + this.props.news.digest;
+
+    let request = new Request(encodeURI(url), {
+      method: 'POST',
+      headers: {
+        'Authorization': 'bearer ' + Auth.getToken(),
+      },
+      cache: false});
+    fetch(request);
   }
 
   render() {
@@ -46,7 +62,7 @@ class NewsCard extends React.Component {
             </div> {/* End of 'news-intro-col'*/}
           </div> {/* End of 'col s8'*/}
         </div> {/* End of 'row'*/}
-      </div> 
+      </div>
     );
   }
 }
