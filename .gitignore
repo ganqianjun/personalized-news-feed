@@ -1,4 +1,5 @@
 backend_server/*.pyc
 common/*.pyc
+news_recommendation_service/*.pyc
 news_pipeline/*.pyc
 news_pipeline/scrapers/*.pyc
