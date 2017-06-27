@@ -1,6 +1,7 @@
 lxml
 newspaper
 numpy
+pandas
 pika
 pymongo
 python-dateutil
@@ -9,3 +10,4 @@ redis
 requests
 scipy
 sklearn
+tensorflow
