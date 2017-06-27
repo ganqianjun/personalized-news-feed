@@ -11,3 +11,4 @@ requests
 scipy
 sklearn
 tensorflow
+watchdog
