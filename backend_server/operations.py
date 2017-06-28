@@ -5,30 +5,31 @@ import random
 import redis
 import sys
 
-from bson.json_util import dumps
-from datetime import datetime
-
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
+from bson.json_util import dumps
+from cloudAMQP_client import CloudAMQPClient
+from config_parser import config
+from datetime import datetime
 import mongodb_client
 import news_recommendation_service_client
-from cloudAMQP_client import CloudAMQPClient
 
-REDIS_HOST = "localhost"
-REDIS_PORT = 6379
+REDIS_HOST = config['redis']['host']
+REDIS_PORT = config['redis']['port']
 
-NEWS_TABLE_NAME = "news"
-CLICK_LOGS_TABLE_NAME = 'click_logs'
+NEWS_TABLE_NAME = config['mongodb']['table_news']
+CLICK_LOGS_TABLE_NAME = config['mongodb']['table_clicks']
 
-NEWS_LIMIT = 100
-NEWS_LIST_BATCH_SIZE = 10
-USER_NEWS_TIME_OUT_IN_SECONDS = 600
+NEWS_LIMIT = int(config['backend']['news_limit'])
+NEWS_LIST_BATCH_SIZE = int(config['backend']['news_list_batch_size'])
+USER_NEWS_TIME_OUT_IN_SECONDS = int(config['backend']['user_news_time_out_in_seconds'])
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT, db=0)
 
-LOG_CLICKS_TASK_QUEUE_URL = 'amqp://ecuzowxa:wvDDMpmkDibM6oCezovysyWzKQRzclCu@donkey.rmq.cloudamqp.com/ecuzowxa'
-LOG_CLICKS_TASK_QUEUE_NAME = 'personalized-news-feed-log-clicks-task-queue'
+LOG_CLICKS_TASK_QUEUE_URL = config['cloudAMQP']['log_clicks_task_queue_url']
+LOG_CLICKS_TASK_QUEUE_NAME = config['cloudAMQP']['log_clicks_task_queue_name']
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
 
 def getNewsSummariesForUser(user_id, page_num):
@@ -90,5 +91,5 @@ def logNewsClickForUser(user_id, news_id):
         'newsId': news_id,
         'timestamp': str(datetime.utcnow())
     }
-    print message
+    #print message
     cloudAMQP_client.sendMessage(message);

@@ -1,5 +1,7 @@
+import ast
 import datetime
 import hashlib
+import json
 import os
 import redis
 import sys
@@ -8,74 +10,26 @@ import sys
 # we could also use  '__init__.py'
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 import news_api_client
-
 from cloudAMQP_client import CloudAMQPClient
+from config_parser import config
 
-NEWS_SOURCES = [
-    'abc-news-au',
-    'al-jazeera-english',
-    'ars-technica',
-    'associated-press',
-    'bbc-news',
-    'bbc-sport',
-    'bild',
-    'bloomberg',
-    'breitbart-news',
-    'business-insider',
-    'buzzfeed',
-    'cnbc',
-    'cnn',
-    'daily-mail',
-    'die-zeit',
-    'engadget',
-    'entertainment-weekly',
-    'espn',
-    'espn-cric-info',
-    'financial-times',
-    'focus',
-    'fortune',
-    'fox-sports',
-    'google-news',
-    'gruenderszene',
-    'hacker-news',
-    'handelsblatt',
-    'ign',
-    'independent',
-    'mashable',
-    'metro',
-    'mirror',
-    'mtv-news',
-    'national-geographic',
-    'new-scientist',
-    'newsweek',
-    'new-york-magazine',
-    'polygon',
-    'recode',
-    'techcrunch',
-    'techradar',
-    'the-economist',
-    'the-hindu',
-    'the-new-york-times',
-    'the-wall-street-journal',
-    'the-washington-post'
-    'time',
-    'usa-today'
-]
+NEWS_SOURCES = ast.literal_eval(config['newspaper']['news_sources'])
 
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-
-NEWS_TIME_OUT_IN_SECONDS = 3600 * 24 * 1
-SLEEP_TIME_IN_SECONDS = 10
+REDIS_HOST = config['redis']['host']
+REDIS_PORT = config['redis']['port']
+NEWS_TIME_OUT_IN_SECONDS = config['redis']['expiration']
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT)
 
-SCRAPE_NEWS_TASK_QUEUE_URL = 'amqp://lidfgojb:e2ZxaQS3nDRqgXHBq5mHrxyqjl9K3_uG@donkey.rmq.cloudamqp.com/lidfgojb'
-SCRAPE_NEWS_TASK_QUEUE_NAME = 'personalized-news-feed-scrape-news-task-queue'
+SCRAPE_NEWS_TASK_QUEUE_URL = config['cloudAMQP']['scrape_news_task_queue_url']
+SCRAPE_NEWS_TASK_QUEUE_NAME = config['cloudAMQP']['scrape_news_task_queue_name']
 
-cloudAMQP_client = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)
+scrape_news_queue_client = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)
+
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['scrape_news_task_queue_sleep_time_in_monitor'])
 
 while True:
     news_list = news_api_client.getNewsFromSource(NEWS_SOURCES)
@@ -95,8 +49,8 @@ while True:
             redis_client.set(news_digest, news)
             redis_client.expire(news_digest, NEWS_TIME_OUT_IN_SECONDS)
 
-            cloudAMQP_client.sendMessage(news)
+            scrape_news_queue_client.sendMessage(news)
 
     print "Fetched %d news." % num_of_new_news
 
-    cloudAMQP_client.sleep(SLEEP_TIME_IN_SECONDS)
+    scrape_news_queue_client.sleep(SLEEP_TIME_IN_SECONDS)

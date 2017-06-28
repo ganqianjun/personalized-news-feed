@@ -16,29 +16,35 @@ selection would only have half the weight of the most recent. Increasing epsilon
 would bias towards more recent results more.
 '''
 
-import news_classes
+import ast
 import os
 import sys
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
+from config_parser import config
 
+NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
+print '==============click log======'
+print NEWS_TOPICS
+print '==============='
 # Don't modify this value unless you know what you are doing.
-NUM_OF_CLASSES = 17
-INITIAL_P = 1.0 / NUM_OF_CLASSES
-ALPHA = 0.1
+NUM_OF_TOPICS = int(config['news_topics']['total_number'])
+INITIAL_P = 1.0 / NUM_OF_TOPICS
+ALPHA = float(config['news_recommendation']['alpha'])
 
-SLEEP_TIME_IN_SECONDS = 1
+PREFERENCE_MODEL_TABLE_NAME =  config['mongodb']['table_preference']
+NEWS_TABLE_NAME =  config['mongodb']['table_news']
 
-PREFERENCE_MODEL_TABLE_NAME = "user_preference_model"
-NEWS_TABLE_NAME = "news"
-
-LOG_CLICKS_TASK_QUEUE_URL = "amqp://ecuzowxa:wvDDMpmkDibM6oCezovysyWzKQRzclCu@donkey.rmq.cloudamqp.com/ecuzowxa"
-LOG_CLICKS_TASK_QUEUE_NAME = "personalized-news-feed-log-clicks-task-queue"
+LOG_CLICKS_TASK_QUEUE_URL = config['cloudAMQP']['log_clicks_task_queue_url']
+LOG_CLICKS_TASK_QUEUE_NAME = config['cloudAMQP']['log_clicks_task_queue_name']
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
+
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['log_clicks_task_queue_sleep_time'])
 
 def handle_message(msg):
     if msg is None or not isinstance(msg, dict) :
@@ -61,7 +67,7 @@ def handle_message(msg):
         print 'Creating preference model for new user: %s' % userId
         new_model = {'userId' : userId}
         preference = {}
-        for i in news_classes.classes:
+        for i in NEWS_TOPICS:
             preference[i] = float(INITIAL_P)
         new_model['preference'] = preference
         model = new_model
@@ -72,10 +78,10 @@ def handle_message(msg):
     news = db[NEWS_TABLE_NAME].find_one({'digest': newsId})
     if (news is None
         or 'class' not in news
-        or news['class'] not in news_classes.classes):
+        or news['class'] not in NEWS_TOPICS):
         print news is None
         print 'class' not in news
-        print news['class'] not in news_classes.classes
+        print news['class'] not in NEWS_TOPICS
         print 'Skipping processing...'
         return
 

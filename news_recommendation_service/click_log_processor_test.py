@@ -7,11 +7,13 @@ from sets import Set
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 import mongodb_client
+from config_parser import config
 
-PREFERENCE_MODEL_TABLE_NAME = "user_preference_model"
-NEWS_TABLE_NAME = "news_test"
+PREFERENCE_MODEL_TABLE_NAME = config['mongodb']['table_preference']
+NEWS_TABLE_NAME = config['mongodb']['table_test']
 
 NUM_OF_CLASSES = 17
 

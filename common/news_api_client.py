@@ -1,10 +1,16 @@
+import os
 import requests
+import sys
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
+
+from config_parser import config
 from json import loads
 
-NEWS_API_KEY = "5d8e3ca4e6464fd7a0f5ec4de21ca37b"
-NEWS_API_ENDPOINT = "https://newsapi.org/v1/"
-ARTICALS_API = "articles"
+
+NEWS_API_KEY = config['newspaper']['key']
+NEWS_API_ENDPOINT = config['newspaper']['endpoint']
+ARTICALS_API = config['newspaper']['articles']
 
 BBC = 'bbc-news'
 CNN = 'cnn'

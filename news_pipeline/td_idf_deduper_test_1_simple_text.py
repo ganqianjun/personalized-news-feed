@@ -10,4 +10,4 @@ documents = [doc1, doc2, doc3, doc4]
 tfidf = TfidfVectorizer().fit_transform(documents)
 pairwise_sim = tfidf * tfidf.T
 
-print pairwise_sim.A
+#print pairwise_sim.A

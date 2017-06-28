@@ -5,13 +5,15 @@ import sys
 
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 import mongodb_client
+from config_parser import config
 
-PREFERENCE_MODEL_TABLE_NAME = "user_preference_model"
+PREFERENCE_MODEL_TABLE_NAME = config['mongodb']['table_preference']
 
-SERVER_HOST = 'localhost'
-SERVER_PORT = 5050
+SERVER_HOST = config['news_recommendation']['host']
+SERVER_PORT = int(config['news_recommendation']['port'])
 
 # For python, it's not good to use '=' to compare 2 floats
 # Ref: https://www.python.org/dev/peps/pep-0485/#proposed-implementation

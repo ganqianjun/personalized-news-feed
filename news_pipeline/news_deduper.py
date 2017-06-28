@@ -1,25 +1,28 @@
 import datetime
 import os
 import sys
+
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 from dateutil import parser
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
+from config_parser import config
 
-DEDUPE_NEWS_TASK_QUEUE_URL = "amqp://ddxjsoen:O4EHrjcK90QrpxEv738_3p-GUKayDoUB@donkey.rmq.cloudamqp.com/ddxjsoen"
-DEDUPE_NEWS_TASK_QUEUE_NAME = "personalized-news-feed-dequpe-news-task-queue"
+DEDUPE_NEWS_TASK_QUEUE_URL = config['cloudAMQP']['dedupe_news_task_queue_url']
+DEDUPE_NEWS_TASK_QUEUE_NAME = config['cloudAMQP']['dedupe_news_task_queue_name']
 
 dedupe_news_queue_client = CloudAMQPClient(DEDUPE_NEWS_TASK_QUEUE_URL, DEDUPE_NEWS_TASK_QUEUE_NAME)
 
-SLEEP_TIME_IN_SECONDS = 1
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['dedupe_news_task_queue_sleep_time_in_deduper'])
 
-SAME_NEWS_SIMILARITY_THRESHOLD = 0.8
+SAME_NEWS_SIMILARITY_THRESHOLD = float(config['news_deduper']['same_news_similarity_threshold'])
 
-NEWS_TABLE_NAME = "news"
+NEWS_TABLE_NAME = config['mongodb']['table_news']
 
 def handle_message(msg):
     if msg is None or not isinstance(msg, dict):
@@ -53,7 +56,7 @@ def handle_message(msg):
         tfidf = TfidfVectorizer().fit_transform(documents)
         pairwise_sim = tfidf * tfidf.T
 
-        print pairwise_sim
+        #print pairwise_sim
 
         rows, _ = pairwise_sim.shape
 

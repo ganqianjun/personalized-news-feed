@@ -1,4 +1,5 @@
-import news_classes
+#import news_classes
+import ast
 import numpy as np
 import os
 import pandas as pd
@@ -8,23 +9,30 @@ import sys
 import tensorflow as tf
 import time
 
+# import packages in trainer
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'trainer'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'configuration'))
+
+from config_parser import config
 from tensorflow.contrib.learn.python.learn.estimators import model_fn
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
-# import packages in trainer
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'trainer'))
 import news_cnn_model
 
 learn = tf.contrib.learn
 
-SERVER_HOST = 'localhost'
-SERVER_PORT = 6060
+NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
+print '======= topic server ====='
+print NEWS_TOPICS
+print '============================'
+SERVER_HOST = config['news_topic_modeling']['host']
+SERVER_PORT = int(config['news_topic_modeling']['port'])
 
 MODEL_DIR = '../model'
 MODEL_UPDATE_LAG_IN_SECONDS = 60
 
-N_CLASSES = 17;
+N_CLASSES = int(config['news_topics']['total_number'])
 
 VARS_FILE = '../model/vars'
 VOCAB_PROCESSOR_SAVE_FILE = '../model/vocab_procesor_save_file'
@@ -89,7 +97,8 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
                 predict_x, as_iterable=True)
         ]
         print y_predicted[0]
-        topic = news_classes.class_map[str(y_predicted[0])]
+        #topic = news_classes.class_map[str(y_predicted[0])]
+        topic = NEWS_TOPICS[y_predicted[0]]
         return topic
 
 # Setup watchdog
