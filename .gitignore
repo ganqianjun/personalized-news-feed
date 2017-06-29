@@ -1,3 +1,4 @@
 */*.pyc
 */*/*.pyc
+web_server/npm-debug.log
 news_topic_modeling_service/model
