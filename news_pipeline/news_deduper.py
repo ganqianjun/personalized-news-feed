@@ -13,16 +13,16 @@ import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
 
-DEDUPE_NEWS_TASK_QUEUE_URL = config['cloudAMQP']['dedupe_news_task_queue_url']
-DEDUPE_NEWS_TASK_QUEUE_NAME = config['cloudAMQP']['dedupe_news_task_queue_name']
+DEDUPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['dedupe_news_task_queue_url'])
+DEDUPE_NEWS_TASK_QUEUE_NAME = str(config['cloudAMQP']['dedupe_news_task_queue_name'])
 
 dedupe_news_queue_client = CloudAMQPClient(DEDUPE_NEWS_TASK_QUEUE_URL, DEDUPE_NEWS_TASK_QUEUE_NAME)
 
-SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['dedupe_news_task_queue_sleep_time_in_deduper'])
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['dedupe_news_task_queue_sleep_time_in_seconds_at_deduper'])
 
 SAME_NEWS_SIMILARITY_THRESHOLD = float(config['news_deduper']['same_news_similarity_threshold'])
 
-NEWS_TABLE_NAME = config['mongodb']['table_news']
+NEWS_TABLE_NAME = str(config['mongodb']['table_news'])
 
 def handle_message(msg):
     if msg is None or not isinstance(msg, dict):

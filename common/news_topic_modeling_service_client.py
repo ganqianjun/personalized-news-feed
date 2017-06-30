@@ -6,9 +6,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 from config_parser import config
 
-HOST=config['news_topic_modeling']['host']
-PORT=config['news_topic_modeling']['port']
-URL = "http://" + HOST + ':' + PORT
+HOST = str(config['news_topic_modeling']['host'])
+PORT = str(config['news_topic_modeling']['port'])
+URL = 'http://' + HOST + ':' + PORT
 
 client = pyjsonrpc.HttpClient(url=URL)
 

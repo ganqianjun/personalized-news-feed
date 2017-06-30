@@ -6,9 +6,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 from config_parser import config
 from pymongo import MongoClient
 
-MONGO_DB_HOST = config['mongodb']['host']
-MONGO_DB_PORT = config['mongodb']['port']
-DB_NAME = config['mongodb']['db']
+MONGO_DB_HOST = str(config['mongodb']['host'])
+MONGO_DB_PORT = int(config['mongodb']['port'])
+DB_NAME = str(config['mongodb']['db'])
 
 client = MongoClient("%s:%s" % (MONGO_DB_HOST, MONGO_DB_PORT))
 

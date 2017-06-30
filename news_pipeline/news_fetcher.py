@@ -10,15 +10,15 @@ from newspaper import Article
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
 
-SCRAPE_NEWS_TASK_QUEUE_URL = config['cloudAMQP']['scrape_news_task_queue_url']
-SCRAPE_NEWS_TASK_QUEUE_NAME = config['cloudAMQP']['scrape_news_task_queue_name']
-DEDUPE_NEWS_TASK_QUEUE_URL = config['cloudAMQP']['dedupe_news_task_queue_url']
-DEDUPE_NEWS_TASK_QUEUE_NAME = config['cloudAMQP']['dedupe_news_task_queue_name']
+SCRAPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['scrape_news_task_queue_url'])
+SCRAPE_NEWS_TASK_QUEUE_NAME = str(config['cloudAMQP']['scrape_news_task_queue_name'])
+DEDUPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['dedupe_news_task_queue_url'])
+DEDUPE_NEWS_TASK_QUEUE_NAME = str(config['cloudAMQP']['dedupe_news_task_queue_name'])
 
 scrape_news_queue_client = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)
 dedupe_news_queue_client = CloudAMQPClient(DEDUPE_NEWS_TASK_QUEUE_URL, DEDUPE_NEWS_TASK_QUEUE_NAME)
 
-SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['scrape_news_task_queue_sleep_time_in_fetcher'])
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['scrape_news_task_queue_sleep_time_in_seconds_at_fetcher'])
 
 def handle_message(msg):
     if msg is None or not isinstance(msg, dict):

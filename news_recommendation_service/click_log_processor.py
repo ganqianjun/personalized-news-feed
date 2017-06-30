@@ -29,22 +29,19 @@ from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
 
 NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
-print '==============click log======'
-print NEWS_TOPICS
-print '==============='
 # Don't modify this value unless you know what you are doing.
-NUM_OF_TOPICS = int(config['news_topics']['total_number'])
+NUM_OF_TOPICS = int(config['news_topics']['number_of_topics'])
 INITIAL_P = 1.0 / NUM_OF_TOPICS
 ALPHA = float(config['news_recommendation']['alpha'])
 
-PREFERENCE_MODEL_TABLE_NAME =  config['mongodb']['table_preference']
-NEWS_TABLE_NAME =  config['mongodb']['table_news']
+PREFERENCE_MODEL_TABLE_NAME = str(config['mongodb']['table_preference'])
+NEWS_TABLE_NAME = str(config['mongodb']['table_news'])
 
-LOG_CLICKS_TASK_QUEUE_URL = config['cloudAMQP']['log_clicks_task_queue_url']
-LOG_CLICKS_TASK_QUEUE_NAME = config['cloudAMQP']['log_clicks_task_queue_name']
+LOG_CLICKS_TASK_QUEUE_URL = str(config['cloudAMQP']['log_clicks_task_queue_url'])
+LOG_CLICKS_TASK_QUEUE_NAME = str(config['cloudAMQP']['log_clicks_task_queue_name'])
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
 
-SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['log_clicks_task_queue_sleep_time'])
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['log_clicks_task_queue_sleep_time_in_seconds'])
 
 def handle_message(msg):
     if msg is None or not isinstance(msg, dict) :

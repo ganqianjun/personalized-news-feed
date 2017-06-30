@@ -18,18 +18,18 @@ from config_parser import config
 
 NEWS_SOURCES = ast.literal_eval(config['newspaper']['news_sources'])
 
-REDIS_HOST = config['redis']['host']
-REDIS_PORT = config['redis']['port']
-NEWS_TIME_OUT_IN_SECONDS = config['redis']['expiration']
+REDIS_HOST = str(config['redis']['host'])
+REDIS_PORT = int(config['redis']['port'])
+NEWS_TIME_OUT_IN_SECONDS = int(config['redis']['expiration'])
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT)
 
-SCRAPE_NEWS_TASK_QUEUE_URL = config['cloudAMQP']['scrape_news_task_queue_url']
-SCRAPE_NEWS_TASK_QUEUE_NAME = config['cloudAMQP']['scrape_news_task_queue_name']
+SCRAPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['scrape_news_task_queue_url'])
+SCRAPE_NEWS_TASK_QUEUE_NAME = str(config['cloudAMQP']['scrape_news_task_queue_name'])
 
 scrape_news_queue_client = CloudAMQPClient(SCRAPE_NEWS_TASK_QUEUE_URL, SCRAPE_NEWS_TASK_QUEUE_NAME)
 
-SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['scrape_news_task_queue_sleep_time_in_monitor'])
+SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['scrape_news_task_queue_sleep_time_in_seconds_at_monitor'])
 
 while True:
     news_list = news_api_client.getNewsFromSource(NEWS_SOURCES)

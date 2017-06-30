@@ -8,9 +8,9 @@ from config_parser import config
 from json import loads
 
 
-NEWS_API_KEY = config['newspaper']['key']
-NEWS_API_ENDPOINT = config['newspaper']['endpoint']
-ARTICALS_API = config['newspaper']['articles']
+NEWS_API_KEY = str(config['newspaper']['key'])
+NEWS_API_ENDPOINT = str(config['newspaper']['endpoint'])
+ARTICALS_API = str(config['newspaper']['articles'])
 
 BBC = 'bbc-news'
 CNN = 'cnn'

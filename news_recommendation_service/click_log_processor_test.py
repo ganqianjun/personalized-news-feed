@@ -12,10 +12,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 import mongodb_client
 from config_parser import config
 
-PREFERENCE_MODEL_TABLE_NAME = config['mongodb']['table_preference']
-NEWS_TABLE_NAME = config['mongodb']['table_test']
+PREFERENCE_MODEL_TABLE_NAME = str(config['mongodb']['table_preference'])
+NEWS_TABLE_NAME = str(config['mongodb']['table_test'])
 
-NUM_OF_CLASSES = 17
+NUM_OF_CLASSES = int(config['mongodb']['news_topics']['number_of_topics'])
 
 # Start MongoDB before running following tests.
 def test_basic():

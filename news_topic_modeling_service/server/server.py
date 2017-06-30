@@ -23,16 +23,13 @@ import news_cnn_model
 learn = tf.contrib.learn
 
 NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
-print '======= topic server ====='
-print NEWS_TOPICS
-print '============================'
-SERVER_HOST = config['news_topic_modeling']['host']
+SERVER_HOST = str(config['news_topic_modeling']['host'])
 SERVER_PORT = int(config['news_topic_modeling']['port'])
 
 MODEL_DIR = '../model'
 MODEL_UPDATE_LAG_IN_SECONDS = 60
 
-N_CLASSES = int(config['news_topics']['total_number'])
+N_CLASSES = int(config['news_topics']['number_of_topics'])
 
 VARS_FILE = '../model/vars'
 VOCAB_PROCESSOR_SAVE_FILE = '../model/vocab_procesor_save_file'

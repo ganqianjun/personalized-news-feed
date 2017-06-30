@@ -10,9 +10,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 import mongodb_client
 from config_parser import config
 
-PREFERENCE_MODEL_TABLE_NAME = config['mongodb']['table_preference']
+PREFERENCE_MODEL_TABLE_NAME = str(config['mongodb']['table_preference'])
 
-SERVER_HOST = config['news_recommendation']['host']
+SERVER_HOST = str(config['news_recommendation']['host'])
 SERVER_PORT = int(config['news_recommendation']['port'])
 
 # For python, it's not good to use '=' to compare 2 floats

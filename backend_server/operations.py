@@ -16,11 +16,11 @@ from datetime import datetime
 import mongodb_client
 import news_recommendation_service_client
 
-REDIS_HOST = config['redis']['host']
-REDIS_PORT = config['redis']['port']
+REDIS_HOST = str(config['redis']['host'])
+REDIS_PORT = int(config['redis']['port'])
 
-NEWS_TABLE_NAME = config['mongodb']['table_news']
-CLICK_LOGS_TABLE_NAME = config['mongodb']['table_clicks']
+NEWS_TABLE_NAME = str(config['mongodb']['table_news'])
+CLICK_LOGS_TABLE_NAME = str(config['mongodb']['table_clicks'])
 
 NEWS_LIMIT = int(config['backend']['news_limit'])
 NEWS_LIST_BATCH_SIZE = int(config['backend']['news_list_batch_size'])
@@ -28,8 +28,8 @@ USER_NEWS_TIME_OUT_IN_SECONDS = int(config['backend']['user_news_time_out_in_sec
 
 redis_client = redis.StrictRedis(REDIS_HOST, REDIS_PORT, db=0)
 
-LOG_CLICKS_TASK_QUEUE_URL = config['cloudAMQP']['log_clicks_task_queue_url']
-LOG_CLICKS_TASK_QUEUE_NAME = config['cloudAMQP']['log_clicks_task_queue_name']
+LOG_CLICKS_TASK_QUEUE_URL = str(config['cloudAMQP']['log_clicks_task_queue_url'])
+LOG_CLICKS_TASK_QUEUE_NAME = str(config['cloudAMQP']['log_clicks_task_queue_name'])
 cloudAMQP_client = CloudAMQPClient(LOG_CLICKS_TASK_QUEUE_URL, LOG_CLICKS_TASK_QUEUE_NAME)
 
 def getNewsSummariesForUser(user_id, page_num):

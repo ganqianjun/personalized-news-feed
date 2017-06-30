@@ -12,4 +12,3 @@ scipy
 sklearn
 tensorflow
 watchdog
-pyyaml
