@@ -9,6 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'scrapers'))
 from newspaper import Article
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from sys_log_client import logger
 
 SCRAPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['scrape_news_task_queue_url'])
 SCRAPE_NEWS_TASK_QUEUE_NAME = str(config['cloudAMQP']['scrape_news_task_queue_name'])
@@ -22,7 +23,7 @@ SLEEP_TIME_IN_SECONDS = int(config['cloudAMQP']['scrape_news_task_queue_sleep_ti
 
 def handle_message(msg):
     if msg is None or not isinstance(msg, dict):
-        print 'News fetcher : message is broken'
+        logger.error('News fetcher : message is broken')
         return
 
     task = msg
@@ -42,6 +43,6 @@ while True:
             try:
                 handle_message(msg)
             except Exception as e:
-                print 'News fetcher error : %s' % e
+                logger.error("News fetcher error : %s" % e)
                 pass
         scrape_news_queue_client.sleep(SLEEP_TIME_IN_SECONDS)

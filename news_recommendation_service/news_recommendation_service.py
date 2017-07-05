@@ -9,6 +9,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 import mongodb_client
 from config_parser import config
+from sys_log_client import logger
 
 PREFERENCE_MODEL_TABLE_NAME = str(config['mongodb']['table_preference'])
 
@@ -48,6 +49,6 @@ http_server = pyjsonrpc.ThreadingHttpServer(
     RequestHandlerClass = RequestHandler
 )
 
-print "Starting HTTP server on %s:%d" % (SERVER_HOST, SERVER_PORT)
+logger.info("Starting news recommendation service on %s:%d" % (SERVER_HOST, SERVER_PORT))
 
 http_server.serve_forever()

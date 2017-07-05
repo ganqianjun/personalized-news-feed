@@ -6,6 +6,7 @@ import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 from config_parser import config
+from sys_log_client import logger
 
 SERVER_HOST = str(config['backend']['host'])
 SERVER_PORT = int(config['backend']['port'])
@@ -33,6 +34,6 @@ http_server = pyjsonrpc.ThreadingHttpServer(
   RequestHandlerClass = RequestHandler
 )
 
-print "Starting HTTP server on %s:%d" % (SERVER_HOST, SERVER_PORT)
+logger.info("Starting Backend HTTP server on %s:%d" % (SERVER_HOST, SERVER_PORT))
 
 http_server.serve_forever()

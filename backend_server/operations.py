@@ -13,6 +13,7 @@ from bson.json_util import dumps
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
 from datetime import datetime
+from sys_log_client import logger
 import mongodb_client
 import news_recommendation_service_client
 
@@ -91,5 +92,6 @@ def logNewsClickForUser(user_id, news_id):
         'newsId': news_id,
         'timestamp': str(datetime.utcnow())
     }
-    #print message
-    cloudAMQP_client.sendMessage(message);
+    cloudAMQP_client.sendMessage(message)
+
+    logger.debug("logNewsClickForUser: send message %s" % message)

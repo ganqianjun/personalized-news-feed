@@ -1,5 +1,7 @@
 import tensorflow as tf
 
+from sys_log_client import logger
+
 EMBEDDING_SIZE = 40
 N_FILTERS = 10
 WINDOW_SIZE = 20

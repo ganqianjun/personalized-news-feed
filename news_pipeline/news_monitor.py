@@ -15,6 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 import news_api_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from sys_log_client import logger
 
 NEWS_SOURCES = ast.literal_eval(config['newspaper']['news_sources'])
 
@@ -51,6 +52,6 @@ while True:
 
             scrape_news_queue_client.sendMessage(news)
 
-    print "Fetched %d news." % num_of_new_news
+    logger.info("News monitor : fetched %d news." % num_of_new_news)
 
     scrape_news_queue_client.sleep(SLEEP_TIME_IN_SECONDS)

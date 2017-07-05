@@ -27,6 +27,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from sys_log_client import logger
 
 NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
 # Don't modify this value unless you know what you are doing.
@@ -61,7 +62,7 @@ def handle_message(msg):
 
     # If model not exists, create a new one
     if model is None:
-        print 'Creating preference model for new user: %s' % userId
+        logger.debug('Click log processor: Creating preference model for new user: %s' % userId)
         new_model = {'userId' : userId}
         preference = {}
         for i in NEWS_TOPICS:
@@ -69,17 +70,14 @@ def handle_message(msg):
         new_model['preference'] = preference
         model = new_model
 
-    print 'Updating preference model for new user: %s' % userId
+    logger.debug('Click log processor: Updating preference model for new user: %s' % userId)
 
     # Update model using time decaying method
     news = db[NEWS_TABLE_NAME].find_one({'digest': newsId})
     if (news is None
         or 'class' not in news
         or news['class'] not in NEWS_TOPICS):
-        print news is None
-        print 'class' not in news
-        print news['class'] not in NEWS_TOPICS
-        print 'Skipping processing...'
+        logger.error("Click log prrocessor: news doesn't exist or news topic doesn't exist")
         return
 
     click_class = news['class']
@@ -105,7 +103,7 @@ def run():
                 try:
                     handle_message(msg)
                 except Exception as e:
-                    print e
+                    logger.error("Click log processor : handle message has error %s" % e)
                     pass
             # Remove this if this becomes a bottleneck.
             cloudAMQP_client.sleep(SLEEP_TIME_IN_SECONDS)

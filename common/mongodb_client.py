@@ -5,6 +5,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 from config_parser import config
 from pymongo import MongoClient
+from sys_log_client import logger
 
 MONGO_DB_HOST = str(config['mongodb']['host'])
 MONGO_DB_PORT = int(config['mongodb']['port'])

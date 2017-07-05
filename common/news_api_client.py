@@ -6,7 +6,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
 
 from config_parser import config
 from json import loads
-
+from sys_log_client import logger
 
 NEWS_API_KEY = str(config['newspaper']['key'])
 NEWS_API_ENDPOINT = str(config['newspaper']['endpoint'])

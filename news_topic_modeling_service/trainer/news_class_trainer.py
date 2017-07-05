@@ -7,6 +7,7 @@ import shutil
 import tensorflow as tf
 
 from sklearn import metrics
+from sys_log_client import logger
 
 learn = tf.contrib.learn
 
@@ -45,7 +46,7 @@ def main(unused_argv):
     x_test = np.array(list(vocab_processor.transform(x_test)))
 
     n_words = len(vocab_processor.vocabulary_)
-    print('Total words: %d' % n_words)
+    logger.debug('News topic trainer : Total words: %d' % n_words)
 
     # Saving n_words and vocab_processor:
     with open(VARS_FILE, 'w') as f:
@@ -67,7 +68,7 @@ def main(unused_argv):
     ]
 
     score = metrics.accuracy_score(y_test, y_predicted)
-    print('Accuracy: {0:f}'.format(score))
+    log.info('News topic trainer accuracy: {0:f}'.format(score))
 
 if __name__ == '__main__':
     tf.app.run(main=main)

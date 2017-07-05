@@ -12,6 +12,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from sys_log_client import logger
 
 DEDUPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['dedupe_news_task_queue_url'])
 DEDUPE_NEWS_TASK_QUEUE_NAME = str(config['cloudAMQP']['dedupe_news_task_queue_name'])
@@ -62,7 +63,7 @@ def handle_message(msg):
 
         for row in range(1, rows):
             if pairwise_sim[row, 0] > SAME_NEWS_SIMILARITY_THRESHOLD:
-                print "News_deduper : Duplicated news. Ignore"
+                logger.debug("News_deduper : Duplicated news. Ignore")
                 return
 
     # need to transfer string to datetime format when storing in MongoDB
@@ -78,7 +79,7 @@ while True:
             try:
                 handle_message(msg)
             except Exception as e:
-                print 'News deduper error : %s' % e
+                logger.error("News deduper error : %s" % e)
                 pass
 
         dedupe_news_queue_client.sleep(SLEEP_TIME_IN_SECONDS)

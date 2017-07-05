@@ -57,3 +57,11 @@ sudo killall python
 ```
 sudo news_pipeline_launcher.sh
 ```
+## System log file
+The system log file lives under directory 'common'.  
+The default logging level is 'info'. If you need more information, please change  
+the log level to 'debug'.
+```
+logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
+```

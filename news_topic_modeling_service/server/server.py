@@ -14,6 +14,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'trainer'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'configuration'))
 
 from config_parser import config
+from sys_log_client import logger
 from tensorflow.contrib.learn.python.learn.estimators import model_fn
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -47,8 +48,8 @@ def restoreVars():
         n_words = pickle.load(f)
     global vocab_processor
     vocab_processor = learn.preprocessing.VocabularyProcessor.restore(VOCAB_PROCESSOR_SAVE_FILE)
-    print vocab_processor
-    print 'Vars updated.'
+    logger.debug(vocab_processor)
+    logger.info("Vars updated.")
 
 def loadModel():
     global classifier
@@ -66,17 +67,17 @@ def loadModel():
     y_train = train_df[0]
     classifier.evaluate(x_train, y_train)
 
-    print "Model updated."
+    logger.info("Model updated.")
 
 restoreVars()
 loadModel()
 
-print "Model loaded"
+logger.info("Model loaded")
 
 class ReloadModelHandler(FileSystemEventHandler):
     def on_any_event(self, event):
         # Reload model
-        print "Model update detected. Loading new model."
+        logger.info("Model update detected. Loading new model.")
         time.sleep(MODEL_UPDATE_LAG_IN_SECONDS)
         restoreVars()
         loadModel()
@@ -87,13 +88,13 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
     def classify(self, text):
         text_series = pd.Series([text])
         predict_x = np.array(list(vocab_processor.transform(text_series)))
-        print predict_x
+        logger.debug(predict_x)
 
         y_predicted = [
             p['class'] for p in classifier.predict(
                 predict_x, as_iterable=True)
         ]
-        print y_predicted[0]
+        logger.debug(y_predicted[0])
         #topic = news_classes.class_map[str(y_predicted[0])]
         topic = NEWS_TOPICS[y_predicted[0]]
         return topic
@@ -109,7 +110,6 @@ http_server = pyjsonrpc.ThreadingHttpServer(
     RequestHandlerClass = RequestHandler
 )
 
-print "Starting predicting server ..."
-print "URL: http://" + str(SERVER_HOST) + ":" + str(SERVER_PORT)
+logger.info("Starting predicting server on http:// %s : %s" % (str(SERVER_HOST), str(SERVER_PORT)))
 
 http_server.serve_forever()

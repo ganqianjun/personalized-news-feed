@@ -1,6 +1,10 @@
 import ConfigParser
-import io
 import os
+import sys
+
+# import common package in parent directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
+from sys_log_client import logger
 
 config = {}
 
@@ -20,4 +24,5 @@ for section in config_parser.sections():
     for options in config_parser.options(section):
         config[section][options] = config_parser.get(section, options)
 
-# print config
+logger.debug("The configuration is: ")
+logger.debug(config)
