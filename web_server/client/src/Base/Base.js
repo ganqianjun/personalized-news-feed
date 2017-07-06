@@ -16,7 +16,7 @@ const Base = ({children}) => (
            {Auth.isUserAuthenticated() ?
              (<div>
                 <li>{Auth.getEmail()}</li>
-                <li><a href="/logout">Log Out</a></li>
+                <li><Link to="/logout">Log Out</Link></li>
               </div>)
               :
              (<div>

@@ -40,6 +40,7 @@ app.use('/news', news);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  console.log("app.js : 404 not found");
   var err = new Error('Not Found');
   err.status = 404;
   res.send('404 Not Found');

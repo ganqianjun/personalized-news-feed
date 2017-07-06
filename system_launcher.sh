@@ -10,9 +10,11 @@ mydir="${PWD}"
 pip install -r requirements.txt
 
 cd $mydir/web_server/client
+npm install
 npm run build
 
 cd $mydir/web_server/server
+npm install
 npm build
 
 # start

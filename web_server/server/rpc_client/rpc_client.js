@@ -20,7 +20,7 @@ function getNewsSummariesForUser(user_id, page_num, callback) {
     if (err) {
       throw err;
     }
-    console.log(response);
+    console.log("rpc_client.js : getNewsSummariesForUser response: " + response);
     callback(response);
   });
 }
@@ -29,7 +29,7 @@ function getNewsSummariesForUser(user_id, page_num, callback) {
 function logNewsClickForUser(user_id, news_id) {
     client.request('logNewsClickForUser', [user_id, news_id], function(err, error, response) {
         if (err) throw err;
-        console.log(response);
+        console.log("rpc_client.js: logNewsClickForUser response: " + response);
     });
 }
 

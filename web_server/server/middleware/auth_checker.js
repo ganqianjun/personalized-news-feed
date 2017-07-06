@@ -4,7 +4,8 @@ const config = require('../config/config.json');
 
 // to check whether the request has token
 module.exports = (req, res, next) => {
-  console.log('auth_checker.js: req: ' + req.headers);
+  console.log('auth_checker.js: req: ');
+  console.log(req.headers);
 
   if (!req.headers.authorization) {
     return res.status(401).end();
