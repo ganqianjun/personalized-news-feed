@@ -9,9 +9,9 @@ import Auth from '../Auth/Auth';
 // but the page could be news, login form, signup form etc
 const Base = ({children}) => (
   <div>
-    <nav className="nav-bar indigo lighten-1">
+    <nav className="nav-bar blue lighten-1">
        <div className="nav-wrapper">
-         <a href="/" className="brand-logo">Personalized News Feed</a>
+         <a href="/" className="brand-logo"> Personalized News Feed</a>
          <ul id="nav-mobile" className="right">
            {Auth.isUserAuthenticated() ?
              (<div>

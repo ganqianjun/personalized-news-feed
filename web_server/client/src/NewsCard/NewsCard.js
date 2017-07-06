@@ -28,31 +28,31 @@ class NewsCard extends React.Component {
       <div className="news-container"
            onClick={() => this.redirectToUrl(this.props.news.url)}>
         <div className='row'>
-          <div className='col s4 fill'>
+          <div className='col s12 m5 fill'>
             <img src={this.props.news.urlToImage} alt='news'/>
           </div>
-          <div className="col s8">
+          <div className="col s12 m7">
             <div className="news-intro-col">
               <div className="news-intro-panel">
-                <h4>{this.props.news.title}</h4>
+                <h5>{this.props.news.title}</h5>
                 <div className="news-description">
                   <p>{this.props.news.description}</p>
                   <div>
                     {
                       this.props.news.source != null &&
-                      <div className='chip light-blue news-chip'>
+                      <div className='chip light-blue lighten-3 news-chip'>
                         {this.props.news.source}
                       </div>
                     }
                     {
                       this.props.news.reason != null &&
-                      <div className='chip light-green news-chip'>
+                      <div className='chip amber lighten-3 news-chip'>
                         {this.props.news.reason}
                       </div>
                     }
                     {
                       this.props.news.time != null &&
-                      <div className='chip amber news-chip'>
+                      <div className='chip light-green lighten-3 news-chip'>
                         {this.props.news.time}
                       </div>
                     }

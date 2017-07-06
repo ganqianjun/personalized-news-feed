@@ -8,11 +8,7 @@ class LoginPage extends React.Component {
     super(props, context);
 
     this.state = {
-      errors: {
-        summary: 'Summary Error',
-        email: 'Email isn\'t correct',
-        password: 'Password isn\'t correct',
-      },
+      errors: {},
       user: {
         email: '',
         password: ''
