@@ -4,10 +4,16 @@ import Auth from '../Auth/Auth';
 import React from 'react';
 
 class NewsCard extends React.Component {
-  redirectToUrl(url) {
-    this.sendClickLog();
-    window.open(url, '_blank');
-  }
+  constructor() {
+    super();
+    this.redirectToUrl = this.redirectToUrl.bind(this);
+   }
+
+   redirectToUrl(event) {
+     event.preventDefault();
+     this.sendClickLog();
+     window.open(this.props.news.url, '_blank');
+   }
 
   sendClickLog() {
     let url = 'http://localhost:3000/news/userId/' + Auth.getEmail()
@@ -25,8 +31,7 @@ class NewsCard extends React.Component {
   render() {
     // news is in NewsPanel so NewsCard only need to show it
     return (
-      <div className="news-container"
-           onClick={() => this.redirectToUrl(this.props.news.url)}>
+      <div className="news-container" onClick={this.redirectToUrl}>
         <div className='row'>
           <div className='col s12 m5 fill'>
             <img src={this.props.news.urlToImage} alt='news'/>
