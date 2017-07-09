@@ -13,7 +13,7 @@ router.get('/userId/:userId/pageNum/:pageNum', function(req, res, next) {
   });
 })
 
-// Log new clidk
+// Log new click
 router.post('/userId/:userId/newsId/:newsId', function(req,res, next) {
   console.log('web-server: Logging news click...');
   user_id = req.params['userId'];

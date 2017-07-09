@@ -3,6 +3,7 @@ newspaper
 numpy
 pandas
 pika
+psutil
 pymongo
 python-dateutil
 python-jsonrpc
