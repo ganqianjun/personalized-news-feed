@@ -25,7 +25,11 @@ cd $mydir/backend_server
 python service.py &
 
 cd $mydir/news_recommendation_service
+python click_log_processor.py &
 python news_recommendation_service.py &
+
+cd $mydir/monitor_service
+python system_monitor.py &
 
 echo "=================================================="
 read -p "PRESS [ENTER] TO TERMINATE PROCESSES." PRESSKEY

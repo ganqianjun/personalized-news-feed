@@ -43,6 +43,18 @@ sudo apt-get install libxml2-dev libxslt-dev
 sudo apt-get install libjpeg-dev zlib1g-dev libpng12-devpip
 sudo install —upgrade setuptools
 ```
+## Build and start the monitor system
+This system uses graphite for monitoring.  
+The docker image for graphite is based on [this link](https://github.com/hopsoft/docker-graphite-statsd).  
+In order to use graphite monitor, we need to modify `aggregation-rules.conf`.  
+This file lives under `/opt/graphite/conf`.
+After adding metrics to this conf, we need to rebuild and rerun docker.  
+And the graph could be checked under `localhost/dashboard`  
+
+To start monitor system :
+```
+sudo ./news_monitor_installation.sh 
+```
 
 ## Build and start the system
 ```
