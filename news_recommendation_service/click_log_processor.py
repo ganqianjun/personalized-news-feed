@@ -23,10 +23,12 @@ import sys
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'monitor_service'))
 
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from graphite_client import graphite_aggregator
 from sys_log_client import logger
 
 NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
@@ -70,7 +72,7 @@ def handle_message(msg):
         new_model['preference'] = preference
         model = new_model
 
-    logger.debug('Click log processor: Updating preference model for new user: %s' % userId)
+    logger.info('Click log processor: Updating preference model for new user: %s' % userId)
 
     # Update model using time decaying method
     news = db[NEWS_TABLE_NAME].find_one({'digest': newsId})
@@ -81,6 +83,10 @@ def handle_message(msg):
         return
 
     click_class = news['class']
+
+    # Send the metrics to graphite_aggregator
+    metrics = 'backend.click.' + userId.replace('.', '') + '.' + newsId.replace('.', '').replace('\n','') + '.' + click_class.split(' ')[0]
+    graphite_aggregator.send(metrics, 1)
 
     # Update the clicked one.
     old_p = model['preference'][click_class]

@@ -26,6 +26,7 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
     """ Get user's preference in an ordered class list """
     @pyjsonrpc.rpcmethod
     def getPreferenceForUser(self, user_id):
+        logger.debug("news_recommendation_service - getPreferenceForUser")
         db = mongodb_client.get_db()
         model = db[PREFERENCE_MODEL_TABLE_NAME].find_one({'userId':user_id})
         if model is None:
