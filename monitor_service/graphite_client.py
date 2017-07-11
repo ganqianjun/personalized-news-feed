@@ -18,12 +18,15 @@ class GraphiteClient:
         logger.info("Graphite client is created at %s:%d" % (host, port))
 
     def send(self, metrics, val):
-        timestamp = int(time.time())
-        msgs = '\n%s %f %d\n' % (metrics, val, timestamp)
-        sock = socket.socket()
-        sock.connect((self.host, self.port))
-        sock.sendall(msgs)
-        sock.close()
-        logger.debug("Metrics '%s' with value %f is sent to %s" % (metrics, val, self.port))
+        try:
+            timestamp = int(time.time())
+            msgs = '\n%s %f %d\n' % (metrics, val, timestamp)
+            sock = socket.socket()
+            sock.connect((self.host, self.port))
+            sock.sendall(msgs)
+            sock.close()
+            logger.debug("Metrics '%s' with value %f is sent to %s" % (metrics, val, self.port))
+        except Exception as e:
+            logger.error("Monitor: coudldn't connect to graphite (%s)" % e)
 
 graphite = GraphiteClient(CARBON_SERVER, CARBON_PORT)

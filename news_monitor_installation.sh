@@ -4,6 +4,8 @@ fuser -k 80/tcp
 fuser -k 2003/tcp
 fuser -k 2004/tcp
 
+docker rm -f graphite
+
 cd monitor_service/docker_graphite
 docker build -t graphite .
 docker run -d\
