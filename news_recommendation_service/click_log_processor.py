@@ -28,7 +28,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'monitor_service')
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
-from graphite_client import graphite_aggregator
+from graphite_client import graphite
 from sys_log_client import logger
 
 NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
@@ -84,9 +84,9 @@ def handle_message(msg):
 
     click_class = news['class']
 
-    # Send the metrics to graphite_aggregator
+    # Send the metrics to graphite
     metrics = 'backend.click.' + userId.replace('.', '') + '.' + newsId.replace('.', '').replace('\n','') + '.' + click_class.split(' ')[0]
-    graphite_aggregator.send(metrics, 1)
+    graphite.send(metrics, 1)
 
     # Update the clicked one.
     old_p = model['preference'][click_class]

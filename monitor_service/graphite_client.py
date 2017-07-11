@@ -9,8 +9,7 @@ from config_parser import config
 from sys_log_client import logger
 
 CARBON_SERVER = str(config['graphite_carbon']['carbon_server'])
-CARBON_RECEIVER_PORT = int(config['graphite_carbon']['carbon_receiver_port'])
-CARBON_AGGREGATOR_PORT = int(config['graphite_carbon']['carbon_aggregator_port'])
+CARBON_PORT = int(config['graphite_carbon']['carbon_port'])
 
 class GraphiteClient:
     def __init__(self, host, port):
@@ -27,5 +26,4 @@ class GraphiteClient:
         sock.close()
         logger.debug("Metrics '%s' with value %f is sent to %s" % (metrics, val, self.port))
 
-graphite_receiver = GraphiteClient(CARBON_SERVER, CARBON_RECEIVER_PORT)
-graphite_aggregator = GraphiteClient(CARBON_SERVER, CARBON_AGGREGATOR_PORT)
+graphite = GraphiteClient(CARBON_SERVER, CARBON_PORT)
