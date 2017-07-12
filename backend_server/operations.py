@@ -77,15 +77,6 @@ def getNewsSummariesForUser(user_id, page_num):
     return json.loads(dumps(sliced_news))
 
 def logNewsClickForUser(user_id, news_id):
-    message = {
-        'userId': user_id,
-        'newsId': news_id,
-        'timestamp': datetime.utcnow()
-    }
-
-    db = mongodb_client.get_db()
-    db[CLICK_LOGS_TABLE_NAME].insert(message)
-
     # Send log task to machine learning service for prediction
     message = {
         'userId': user_id,

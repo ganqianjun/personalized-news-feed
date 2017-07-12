@@ -28,6 +28,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'monitor_service')
 import mongodb_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from datetime import datetime
 from graphite_client import graphite
 from sys_log_client import logger
 
@@ -39,6 +40,7 @@ ALPHA = float(config['news_recommendation']['alpha'])
 
 PREFERENCE_MODEL_TABLE_NAME = str(config['mongodb']['table_preference'])
 NEWS_TABLE_NAME = str(config['mongodb']['table_news'])
+CLICK_LOGS_TABLE_NAME = str(config['mongodb']['table_clicks'])
 
 LOG_CLICKS_TASK_QUEUE_URL = str(config['cloudAMQP']['log_clicks_task_queue_url'])
 LOG_CLICKS_TASK_QUEUE_NAME = str(config['cloudAMQP']['log_clicks_task_queue_name'])
@@ -99,6 +101,42 @@ def handle_message(msg):
 
     # update to mongodb
     db[PREFERENCE_MODEL_TABLE_NAME].replace_one({'userId': userId}, model, upsert=True)
+
+    # add news title to click log table
+    click_logs = db[CLICK_LOGS_TABLE_NAME].find({
+        "$and": [
+            {'userId': userId},
+            {'newsId': news['digest']}
+        ]
+    })
+
+    if click_logs.count() == 0:
+        if news['description'] is not None:
+            click_log = {
+                'userId': userId,
+                'newsId': news['digest'],
+                'description': news['description'],
+                'timestamp': datetime.utcnow(),
+                'clicked': 1
+            }
+            db[CLICK_LOGS_TABLE_NAME].insert(click_log)
+            logger.info("Click log processor: add click log")
+            logger.info(news['description'])
+        else:
+            logger.info('==== empty news description ==== ')
+    else:
+        for click_log in click_logs:
+            click_log['timestamp'] = datetime.utcnow()
+            db[CLICK_LOGS_TABLE_NAME].replace_one(
+                {"$and": [
+                    {'userId': userId},
+                    {'newsId': news['digest']}
+                ]},
+                click_log,
+                upsert = True
+            )
+            logger.info("Click log processor: find duplicated click and update the time")
+            logger.info(news['description'])
 
 def run():
     while True:
