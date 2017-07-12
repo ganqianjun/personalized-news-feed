@@ -5,6 +5,7 @@ import sys
 # import common package in parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'common'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'configuration'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'monitor_service'))
 
 from dateutil import parser
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -13,6 +14,7 @@ import mongodb_client
 import news_topic_modeling_service_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
+from graphite_client import graphite
 from sys_log_client import logger
 
 DEDUPE_NEWS_TASK_QUEUE_URL = str(config['cloudAMQP']['dedupe_news_task_queue_url'])
@@ -78,6 +80,10 @@ def handle_message(msg):
 
     # if there is the same news, then replace
     db[NEWS_TABLE_NAME].replace_one({'digest': task['digest']}, task, upsert=True)
+
+    # Send the metrics to graphite
+    metrics = 'news.' + task['source'] + '.' + task['class'].split(' ')[0]
+    graphite.send(metrics, 1)
 
 while True:
     if dedupe_news_queue_client is not None:
