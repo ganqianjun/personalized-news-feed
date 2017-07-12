@@ -10,6 +10,7 @@ from dateutil import parser
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 import mongodb_client
+import news_topic_modeling_service_client
 from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
 from sys_log_client import logger
@@ -68,6 +69,13 @@ def handle_message(msg):
 
     # need to transfer string to datetime format when storing in MongoDB
     task['publishedAt'] = parser.parse(task['publishedAt'])
+
+    # classify news
+    title = task['title']
+    if title is not None:
+        topic = news_topic_modeling_service_client.classify(title)
+        task['class'] = topic
+
     # if there is the same news, then replace
     db[NEWS_TABLE_NAME].replace_one({'digest': task['digest']}, task, upsert=True)
 

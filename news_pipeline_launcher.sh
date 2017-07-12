@@ -2,7 +2,12 @@
 service redis_6379 start
 service mongod start
 
-cd news_pipeline
+mydir="${PWD}"
+
+cd $mydir/news_topic_modeling_service/server
+python server.py &
+
+cd $mydir/news_pipeline
 python news_monitor.py &
 python news_fetcher.py &
 python news_deduper.py &
