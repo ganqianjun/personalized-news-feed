@@ -14,6 +14,7 @@ from cloudAMQP_client import CloudAMQPClient
 from config_parser import config
 from datetime import datetime
 from sys_log_client import logger
+import customized_news_list_client
 import mongodb_client
 import news_recommendation_service_client
 
@@ -61,6 +62,22 @@ def getNewsSummariesForUser(user_id, page_num):
 
         sliced_news = total_news[begin_index:end_index]
 
+    # get click_predict list to customize news list
+    # The lower the number in 'click_predict', the higher probability to click
+    news_description = []
+    for news in sliced_news:
+        if news['description'] and news['description'].strip():
+            news_description.append(news['description'])
+        elif news['title'] and news['title'].strip():
+            news_description.append(news['title'])
+        else:
+            news_description.append("This is an empty description")
+
+    if news_description:
+        click_predict = customized_news_list_client.predict_news_click(user_id, news_description)
+    else:
+        click_predict = []
+
     # get user preference for news
     preference = news_recommendation_service_client.getPreferenceForUser(user_id)
     topPreference = None
@@ -72,8 +89,14 @@ def getNewsSummariesForUser(user_id, page_num):
         del news['text']
         if 'class' in news and news['class'] == topPreference:
             news['reason'] = 'Recommend'
+            click_predict[sliced_news.index(news)] = 0.0
         if news['publishedAt'].date() == datetime.today().date():
             news['time'] = 'Today'
+
+    # sort the news based on the sort order of click_predict
+    sliced_news = [x for (y,x) in sorted(zip(click_predict, sliced_news))]
+
+
     return json.loads(dumps(sliced_news))
 
 def logNewsClickForUser(user_id, news_id):
