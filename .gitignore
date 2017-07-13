@@ -3,4 +3,3 @@
 web_server/npm-debug.log
 news_topic_modeling_service/model
 common/system_log.log
-customized_news_list/training_data/*
