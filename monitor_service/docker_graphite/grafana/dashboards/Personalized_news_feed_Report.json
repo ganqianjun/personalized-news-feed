@@ -1,4 +1,34 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_LOCAL_GRAPHITE",
+      "label": "Local Graphite",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "graphite",
+      "pluginName": "Graphite"
+    }
+  ],
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "4.2.0"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "graphite",
+      "name": "Graphite",
+      "version": "1.0.0"
+    }
+  ],
   "annotations": {
     "list": []
   },
@@ -6,18 +36,18 @@
   "gnetId": null,
   "graphTooltip": 0,
   "hideControls": false,
-  "id": 1,
+  "id": null,
   "links": [],
   "refresh": false,
   "rows": [
     {
       "collapse": false,
-      "height": "250px",
+      "height": 249,
       "panels": [
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "Local Graphite",
+          "datasource": "${DS_LOCAL_GRAPHITE}",
           "fill": 1,
           "id": 1,
           "legend": {
@@ -38,7 +68,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -81,23 +111,11 @@
               "show": true
             }
           ]
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": false,
-      "title": "Dashboard Row",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": 250,
-      "panels": [
+        },
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "Local Graphite",
+          "datasource": "${DS_LOCAL_GRAPHITE}",
           "fill": 1,
           "id": 2,
           "legend": {
@@ -118,7 +136,7 @@
           "points": false,
           "renderer": "flot",
           "seriesOverrides": [],
-          "span": 12,
+          "span": 6,
           "stack": false,
           "steppedLine": false,
           "targets": [
@@ -177,7 +195,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": "Local Graphite",
+          "datasource": "${DS_LOCAL_GRAPHITE}",
           "fill": 1,
           "id": 3,
           "legend": {
@@ -194,8 +212,8 @@
           "links": [],
           "nullPointMode": "null as zero",
           "percentage": false,
-          "pointradius": 2,
-          "points": false,
+          "pointradius": 1,
+          "points": true,
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
@@ -257,7 +275,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "${DS_LOCAL_GRAPHITE}",
           "fill": 1,
           "id": 4,
           "legend": {
@@ -277,7 +295,7 @@
           "nullPointMode": "null as zero",
           "percentage": false,
           "pointradius": 1,
-          "points": false,
+          "points": true,
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
@@ -370,5 +388,5 @@
   },
   "timezone": "browser",
   "title": "Personalized_news_feed",
-  "version": 4
+  "version": 5
 }
