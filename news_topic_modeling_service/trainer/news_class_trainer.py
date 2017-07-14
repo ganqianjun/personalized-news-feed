@@ -4,8 +4,13 @@ import os
 import pandas as pd
 import pickle
 import shutil
+import sys
 import tensorflow as tf
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'configuration'))
+
+from config_parser import config
 from sklearn import metrics
 from sys_log_client import logger
 
@@ -13,12 +18,12 @@ learn = tf.contrib.learn
 
 REMOVE_PREVIOUS_MODEL = True
 
-MODEL_OUTPUT_DIR = '../model/'
-DATA_SET_FILE = '../training_data/labeled_news.csv'
-VARS_FILE = '../model/vars'
-VOCAB_PROCESSOR_SAVE_FILE = '../model/vocab_procesor_save_file'
-MAX_DOCUMENT_LENGTH = 100
-N_CLASSES = 17
+DATA_SET_FILE = str(config['news_topic_modeling']['data_set_file'])
+MODEL_OUTPUT_DIR = str(config['news_topic_modeling']['model_output_dir'])
+VARS_FILE = str(config['news_topic_modeling']['vars_file'])
+VOCAB_PROCESSOR_SAVE_FILE = str(config['news_topic_modeling']['vocab_processor_save_file'])
+MAX_DOCUMENT_LENGTH = int(config['news_topic_modeling']['max_document_length_trainer'])
+N_CLASSES = int(config['news_topics']['number_of_topics'])
 
 # Training parms
 STEPS = 200
@@ -68,7 +73,7 @@ def main(unused_argv):
     ]
 
     score = metrics.accuracy_score(y_test, y_predicted)
-    log.info('News topic trainer accuracy: {0:f}'.format(score))
+    logger.info('News topic trainer accuracy: {0:f}'.format(score))
 
 if __name__ == '__main__':
     tf.app.run(main=main)

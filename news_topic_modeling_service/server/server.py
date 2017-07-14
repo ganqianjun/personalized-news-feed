@@ -27,19 +27,18 @@ NEWS_TOPICS = ast.literal_eval(config['news_topics']['topics'])
 SERVER_HOST = str(config['news_topic_modeling']['host'])
 SERVER_PORT = int(config['news_topic_modeling']['port'])
 
-MODEL_DIR = '../model'
-MODEL_UPDATE_LAG_IN_SECONDS = 60
+MODEL_OUTPUT_DIR = str(config['news_topic_modeling']['model_output_dir'])
+MODEL_UPDATE_LAG_IN_SECONDS = int(config['news_topic_modeling']['model_update_lag_in_seconds'])
+
+VARS_FILE = str(config['news_topic_modeling']['vars_file'])
+VOCAB_PROCESSOR_SAVE_FILE = str(config['news_topic_modeling']['vocab_processor_save_file'])
 
 N_CLASSES = int(config['news_topics']['number_of_topics'])
-
-VARS_FILE = '../model/vars'
-VOCAB_PROCESSOR_SAVE_FILE = '../model/vocab_procesor_save_file'
-
 n_words = 0
 
-MAX_DOCUMENT_LENGTH = 500
-vocab_processor = None
+MAX_DOCUMENT_LENGTH = int(config['news_topic_modeling']['max_document_length_server'])
 
+vocab_processor = None
 classifier = None
 
 def restoreVars():
@@ -55,7 +54,7 @@ def loadModel():
     global classifier
     classifier = learn.Estimator(
         model_fn=news_cnn_model.generate_cnn_model(N_CLASSES, n_words),
-        model_dir=MODEL_DIR)
+        model_dir=MODEL_OUTPUT_DIR)
     # Prepare training and testing
     df = pd.read_csv('../training_data/labeled_news.csv', header=None)
 
@@ -101,7 +100,7 @@ class RequestHandler(pyjsonrpc.HttpRequestHandler):
 
 # Setup watchdog
 observer = Observer()
-observer.schedule(ReloadModelHandler(), path=MODEL_DIR, recursive=False)
+observer.schedule(ReloadModelHandler(), path=MODEL_OUTPUT_DIR, recursive=False)
 observer.start()
 
 # Threading HTTP-Server

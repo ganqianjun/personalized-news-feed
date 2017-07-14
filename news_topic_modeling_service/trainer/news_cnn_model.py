@@ -1,16 +1,22 @@
+import os
 import tensorflow as tf
+import sys
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'common'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'configuration'))
+
+from config_parser import config
 from sys_log_client import logger
 
-EMBEDDING_SIZE = 40
-N_FILTERS = 10
-WINDOW_SIZE = 20
+EMBEDDING_SIZE = int(config['news_cnn_model']['embedding_size'])
+N_FILTERS = int(config['news_cnn_model']['n_filters'])
+WINDOW_SIZE = int(config['news_cnn_model']['window_size'])
 FILTER_SHAPE1 = [WINDOW_SIZE, EMBEDDING_SIZE]
 FILTER_SHAPE2 = [WINDOW_SIZE, N_FILTERS]
-POOLING_WINDOW = 4
-POOLING_STRIDE = 2
+POOLING_WINDOW = int(config['news_cnn_model']['pooling_window'])
+POOLING_STRIDE = int(config['news_cnn_model']['pooling_stride'])
 
-LEARNING_RATE = 0.05
+LEARNING_RATE = float(config['news_cnn_model']['learning_rate'])
 
 def generate_cnn_model(n_classes, n_words):
     """2 layer ConvNet to predict from sequence of words to a class."""
