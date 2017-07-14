@@ -39,7 +39,9 @@ def getNewsSummariesForUser(user_id, page_num):
     begin_index = (page_num - 1) * NEWS_LIST_BATCH_SIZE
     end_index = page_num * NEWS_LIST_BATCH_SIZE
 
-    # The final list of news to be returned.
+    if page_num == 1:
+        redis_client.delete(user_id)
+
     sliced_news = []
 
     if redis_client.get(user_id) is not None:
@@ -52,15 +54,23 @@ def getNewsSummariesForUser(user_id, page_num):
         #print sliced_news_digests
         db = mongodb_client.get_db()
         sliced_news = list(db[NEWS_TABLE_NAME].find({'digest':{'$in':sliced_news_digests}}))
-    else:
+
+    if not sliced_news:
         db = mongodb_client.get_db()
-        total_news = list(db[NEWS_TABLE_NAME].find().sort([('publishedAt', -1)]).limit(NEWS_LIMIT))
-        total_news_digests = map(lambda x:x['digest'], total_news)
+        total_news = list(db[NEWS_TABLE_NAME].find().sort([('publishedAt', -1)]).skip(begin_index).limit(NEWS_LIMIT))
+        latest_total_news_digests = map(lambda x:x['digest'], total_news)
+
+        if page_num == 1:
+            total_news_digests = latest_total_news_digests
+        else:
+            total_news_digests = pickle.loads(redis_client.get(user_id))
+            total_news_digests.extend(latest_total_news_digests)
 
         redis_client.set(user_id, pickle.dumps(total_news_digests))
         redis_client.expire(user_id, USER_NEWS_TIME_OUT_IN_SECONDS)
+        news_digests = pickle.loads(redis_client.get(user_id))
 
-        sliced_news = total_news[begin_index:end_index]
+        sliced_news = total_news[0: NEWS_LIST_BATCH_SIZE]
 
     # get click_predict list to customize news list
     # The lower the number in 'click_predict', the higher probability to click
@@ -95,7 +105,6 @@ def getNewsSummariesForUser(user_id, page_num):
 
     # sort the news based on the sort order of click_predict
     sliced_news = [x for (y,x) in sorted(zip(click_predict, sliced_news))]
-
 
     return json.loads(dumps(sliced_news))
 
